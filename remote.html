@@ -21,7 +21,7 @@
 	
 </head>
 <body>
-
+        
 <div class="container normal fill">
     <div id="module_1_MMM-Remote-Control" class="fill">
         <header class="header">%%TRANSLATE:TITLE%%</header>
@@ -29,7 +29,7 @@
             <div class="menu above-fold">
                 <!-- general back button -->
                 <div id="back-button"
-                     class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu alert-menu"
+                     class="menu-element hidden button power-menu edit-menu settings-menu add-module-menu update-menu alert-menu arduino-menu"
                 >
                     <span class="fa fa-fw fa-angle-left" aria-hidden="true"></span>
                     <!-- <span class="text">%%TRANSLATE:BACK%%</span> -->
@@ -99,8 +99,8 @@
                     <span class="text">%%TRANSLATE:UPDATE_AVAILABLE%%</span>
                 </div>
             </div>
-
-            <div id="below-fold" class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu alert-menu main-menu power-menu">
+            
+            <div id="below-fold" class="below-fold menu-element hidden edit-menu settings-menu add-module-menu update-menu alert-menu main-menu power-menu arduino-menu">
                 <div class="menu-container">
                     <!-- main menu -->
                     <div id="power-button" class="menu-element hidden button main-menu">
@@ -130,6 +130,10 @@
                         <span class="fa fa-fw fa-envelope-o" aria-hidden="true"></span>
                         <span class="text">%%TRANSLATE:ALERT_MENU_NAME%%</span>
                         <span class="fa fa-fw fa-angle-right" aria-hidden="true"></span>
+                    </div>
+                    <div id="arduino-control-button" class="menu-element hidden button main-menu ">
+                        <span class="fa fa-fw fa-external-link " aria-hidden="true"></span>
+                        <span class="text">%%TRANSLATE:Arduino Control%%</span>
                     </div>
                     <div id="mirror-link-button" class="menu-element hidden button main-menu">
                         <span class="fa fa-fw fa-external-link " aria-hidden="true"></span>
@@ -168,7 +172,15 @@
                         <span class="text">%%TRANSLATE:MONITOROFF%%</span>
                     </div>
                 </div>
-
+                   <!-- ARDUINIO SWITCHES -->
+                        
+                        <div id = "arduino-light-switch" class ="button hidden arduino-menu  module-line toggled-off">
+                                <span class="stack fa-fw"><span class="fa fa-fw fa-toggle-on outer-label fa-stack-1x"></span>
+                                <span class="fa fa-fw fa-toggle-off outer-label fa-stack-1x"></span>
+                                <span class="fa fa-fw fa-lock inner-small-label fa-stack-1x"></span></span>
+                                <span class="text">Light Switch</span>
+                        </div>   
+                
                 <!-- below fold part of alert menu -->
                 <form id="alert" action="" method="GET" class="menu-element hidden alert-menu">
                     <input type="hidden" name="action" value="SHOW_ALERT">
@@ -186,9 +198,9 @@
                     <div class="xsmall">%%TRANSLATE:FORM_SECONDS%%</div>
                     <input type="number" name="timer" value="4">
                 </form>
-
                 <!-- below fold part of edit menu -->
                 <div id="visible-modules-container" class="result-list menu-element hidden edit-menu">
+                    
                     <div id="visible-modules-loading">
                         <span class="fa fa-fw fa-spinner fa-pulse"></span>
                         <span class="text">%%TRANSLATE:LOADING%%</span>
@@ -198,8 +210,10 @@
                         <span class="text">%%TRANSLATE:NO_MODULES_LOADED%%</span>
                     </div>
                     <div id="visible-modules-results" class="results small">
+
                         <!-- elements are inserted here -->
                     </div>
+
                 </div>
 
                 <!-- below fold part of settings menu -->
@@ -258,6 +272,7 @@
             <div id="close-result">
                 <span class="fa fa-times-circle delete-button"></span>
             </div>
+
             <div id="result-contents">
                 <!-- content is inserted here -->
             </div>
@@ -272,6 +287,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <script type="text/javascript" src="modules/MMM-Remote-Control/remote.js"></script>

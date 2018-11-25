@@ -99,6 +99,14 @@ Module.register("MMM-Remote-Control", {
 		if (notification === "REFRESH" ) {
             document.location.reload();
 		}
+		if (notification === "TURNONLIGHT"){
+			fetch('http://192.168.1.200/?turnOnLight');
+			// alert('turnOn');
+		}
+		if (notification === "TURNOFFLIGHT"){
+			fetch('http://192.168.1.200/?turnOffLight')
+			
+		}
 		if (notification === "RESTART") {
 			setTimeout(function() {
 				document.location.reload(); console.log('Delayed REFRESH');

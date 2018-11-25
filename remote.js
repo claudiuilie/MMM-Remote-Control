@@ -20,10 +20,10 @@ var Remote = {
     addModule: "",
     changedModules: [],
     deletedModules: [],
-	autoHideTimer: undefined,
-	autoHideDelay: 1000, // ms
+    autoHideTimer: undefined,
+    autoHideDelay: 1000, // ms
 
-    loadButtons: function(buttons) {
+    loadButtons: function (buttons) {
         for (var key in buttons) {
             if (buttons.hasOwnProperty(key)) {
                 var element = document.getElementById(key);
@@ -33,7 +33,7 @@ var Remote = {
         }
     },
 
-    loadTranslations: function() {
+    loadTranslations: function () {
         var self = this;
 
         this.get("get", "data=translations", function (text) {
@@ -41,32 +41,31 @@ var Remote = {
         });
     },
 
-    translate: function(pattern) {
+    translate: function (pattern) {
         return this.translations[pattern];
     },
 
-    hasClass: function(element, name) {
+    hasClass: function (element, name) {
         return (" " + element.className + " ").indexOf(" " + name + " ") > -1;
     },
 
-    hide: function(element) {
+    hide: function (element) {
         if (!this.hasClass(element, "hidden")) {
             element.className += " hidden";
         }
     },
 
-    show: function(element) {
+    show: function (element) {
         if (this.hasClass(element, "hidden")) {
             element.className = element.className.replace(/ ?hidden/, "");
         }
     },
 
-    loadToggleButton: function(element, toggleCallback) {
+    loadToggleButton: function (element, toggleCallback) {
         var self = this;
 
         element.addEventListener("click", function (event) {
-            if (self.hasClass(event.currentTarget, "toggled-off"))
-            {
+            if (self.hasClass(event.currentTarget, "toggled-off")) {
                 if (toggleCallback) {
                     toggleCallback(true, event);
                 }
@@ -78,7 +77,7 @@ var Remote = {
         }, false);
     },
 
-    filter: function(pattern) {
+    filter: function (pattern) {
         var filterInstalled = false;
         if ("installed".indexOf(pattern) !== -1) {
             filterInstalled = true;
@@ -112,14 +111,14 @@ var Remote = {
                 }
             }
             if (match) {
-                element.style.display = "";                
+                element.style.display = "";
             } else {
                 element.style.display = "none";
             }
         }
     },
 
-    closePopup: function() {
+    closePopup: function () {
         var popup = document.getElementById("popup-container");
         popup.style.display = "none";
 
@@ -129,12 +128,12 @@ var Remote = {
         }
     },
 
-    showPopup: function() {
+    showPopup: function () {
         var popup = document.getElementById("popup-container");
         popup.style.display = "block";
     },
 
-    getPopupContent: function(clear) {
+    getPopupContent: function (clear) {
         if (clear === undefined) {
             clear = true;
         }
@@ -144,18 +143,18 @@ var Remote = {
         return document.getElementById("popup-contents");
     },
 
-    loadOtherElements: function() {
+    loadOtherElements: function () {
         var self = this;
 
         var slider = document.getElementById("brightness-slider");
-        slider.addEventListener("change", function(event) {
+        slider.addEventListener("change", function (event) {
             self.getWithStatus("action=BRIGHTNESS&value=" + slider.value);
         }, false);
 
         var input = document.getElementById("add-module-search");
         var deleteButton = document.getElementById("delete-search-input");
 
-        input.addEventListener("input", function(event) {
+        input.addEventListener("input", function (event) {
             self.filter(input.value);
             if (input.value === "") {
                 deleteButton.style.display = "none";
@@ -164,14 +163,14 @@ var Remote = {
             }
         }, false);
 
-        deleteButton.addEventListener("click", function(event) {
+        deleteButton.addEventListener("click", function (event) {
             input.value = "";
             self.filter(input.value);
             deleteButton.style.display = "none";
         }, false);
     },
 
-    showMenu: function(newMenu) {
+    showMenu: function (newMenu) {
         var self = this;
         if (this.currentMenu === "settings-menu") {
             // check for unsaved changes
@@ -212,6 +211,7 @@ var Remote = {
             if (this.hasClass(belowFold, "hide-border")) {
                 belowFold.className = belowFold.className.replace(" hide-border", "");
             }
+
         }
         if (newMenu === "add-module-menu") {
             this.loadModulesToAdd();
@@ -243,12 +243,12 @@ var Remote = {
         this.currentMenu = newMenu;
     },
 
-    setStatus: function(status, message, customContent) {
+    setStatus: function (status, message, customContent) {
         var self = this;
 
-		if (this.autoHideTimer !== undefined) {
-			clearTimeout(this.autoHideTimer);
-		}
+        if (this.autoHideTimer !== undefined) {
+            clearTimeout(this.autoHideTimer);
+        }
 
         var parent = document.getElementById("result-contents");
         while (parent.firstChild) {
@@ -284,12 +284,12 @@ var Remote = {
         if (status === "success") {
             symbol = "fa-check-circle";
             text = this.translate("DONE");
-            onClick = function() {
+            onClick = function () {
                 self.setStatus("none");
             };
-			this.autoHideTimer = setTimeout(function() {
-				self.setStatus("none");
-			}, this.autoHideDelay);
+            this.autoHideTimer = setTimeout(function () {
+                self.setStatus("none");
+            }, this.autoHideDelay);
         }
         if (message) {
             text = message;
@@ -300,7 +300,7 @@ var Remote = {
         this.show(document.getElementById("result"));
     },
 
-    getWithStatus: function(params, callback) {
+    getWithStatus: function (params, callback) {
         var self = this;
 
         self.setStatus("loading");
@@ -310,7 +310,7 @@ var Remote = {
             } else {
                 var result = JSON.parse(response);
                 if (result.status === "success") {
-                    if (result.info){
+                    if (result.info) {
                         self.setStatus("success", result.info);
                     } else {
                         self.setStatus("success");
@@ -322,7 +322,7 @@ var Remote = {
         });
     },
 
-    showModule: function(id, force) {
+    showModule: function (id, force) {
         if (force) {
             this.getWithStatus("action=SHOW&force=true&module=" + id);
         } else {
@@ -330,11 +330,11 @@ var Remote = {
         }
     },
 
-    hideModule: function(id) {
+    hideModule: function (id) {
         this.getWithStatus("action=HIDE&module=" + id);
     },
 
-    install: function(url, index) {
+    install: function (url, index) {
         var self = this;
 
         var downloadButton = document.getElementById("download-button");
@@ -357,7 +357,7 @@ var Remote = {
         });
     },
 
-    get: function(route, params, callback, timeout) {
+    get: function (route, params, callback, timeout) {
         var req = new XMLHttpRequest();
         var url = route + "?" + params;
         req.open("GET", url, true);
@@ -369,10 +369,9 @@ var Remote = {
         //Send the proper header information along with the request
         req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        req.onreadystatechange = function() {
-            if(req.readyState == 4 && req.status == 200) {
-                if (callback)
-                {
+        req.onreadystatechange = function () {
+            if (req.readyState == 4 && req.status == 200) {
+                if (callback) {
                     callback(req.responseText);
                 }
             }
@@ -380,15 +379,14 @@ var Remote = {
         req.send(null);
     },
 
-    post: function(route, params, data, callback, timeout) {
+    post: function (route, params, data, callback, timeout) {
         var req = new XMLHttpRequest();
         var url = route + "?" + params;
         req.open("POST", url, true);
         req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.onreadystatechange = function () { 
+        req.onreadystatechange = function () {
             if (req.readyState == 4 && req.status == 200) {
-                if (callback)
-                {
+                if (callback) {
                     callback(JSON.parse(req.responseText));
                 }
             }
@@ -396,7 +394,7 @@ var Remote = {
         req.send(JSON.stringify(data));
     },
 
-    loadList: function(listname, dataId, callback) {
+    loadList: function (listname, dataId, callback) {
         var self = this;
 
         var loadingIndicator = document.getElementById(listname + "-loading");
@@ -428,50 +426,48 @@ var Remote = {
         });
     },
 
-    formatName: function(string) {
+    formatName: function (string) {
         string = string.replace(/MMM?-/ig, "").replace(/_/g, " ").replace(/-/g, " ");
-        string = string.replace(/([a-z])([A-Z])/g, function(txt){
+        string = string.replace(/([a-z])([A-Z])/g, function (txt) {
             // insert space into camel case
             return txt.charAt(0) + " " + txt.charAt(1);
         });
-        string = string.replace(/\w\S*/g, function(txt){
+        string = string.replace(/\w\S*/g, function (txt) {
             // make character after white space upper case
             return txt.charAt(0).toUpperCase() + txt.substr(1);
         });
         return string.charAt(0).toUpperCase() + string.slice(1);
     },
 
-    formatLabel: function(string) {
+    formatLabel: function (string) {
         // var result = string.replace(/([A-Z])/g, " $1" );
         // return result.charAt(0).toUpperCase() + result.slice(1);
         return string;
     },
 
-    formatPosition: function(string) {
-        return string.replace("_", " ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    formatPosition: function (string) {
+        return string.replace("_", " ").replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
     },
 
-    getVisibilityStatus: function(data) {
+    getVisibilityStatus: function (data) {
         var status = "toggled-on";
         var modules = [];
         if (data.hidden) {
             status = "toggled-off";
             for (var i = 0; i < data.lockStrings.length; i++) {
-                if (data.lockStrings[i].indexOf("MMM-Remote-Control") >= 0)
-                {
+                if (data.lockStrings[i].indexOf("MMM-Remote-Control") >= 0) {
                     continue;
                 }
                 modules.push(data.lockStrings[i]);
-                if (modules.length == 1)
-                {
+                if (modules.length == 1) {
                     status += " external-locked";
                 }
             }
         }
-        return {status: status, modules: modules.join(", ")};
+        return { status: status, modules: modules.join(", ") };
     },
 
-    addToggleElements: function(parent) {
+    addToggleElements: function (parent) {
         var outerSpan = document.createElement("span");
         outerSpan.className = "stack fa-fw";
 
@@ -502,8 +498,7 @@ var Remote = {
         });
     },
 
-    makeToggleButton: function(moduleBox, visibilityStatus)
-    {
+    makeToggleButton: function (moduleBox, visibilityStatus) {
         var self = this;
 
         self.loadToggleButton(moduleBox, function (toggledOn, event) {
@@ -519,7 +514,7 @@ var Remote = {
                     });
                     wrapper.appendChild(ok);
 
-                    var force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function(target) {
+                    var force = self.createSymbolText("fa fa-warning", self.translate("FORCE_SHOW"), function (target) {
                         return function () {
                             target.className = target.className.replace(" external-locked", "").replace("toggled-off", "toggled-on");
                             self.showModule(target.id, true);
@@ -540,7 +535,7 @@ var Remote = {
         });
     },
 
-    loadVisibleModules: function() {
+    loadVisibleModules: function () {
         var self = this;
 
         console.log("Load visible modules...");
@@ -571,7 +566,7 @@ var Remote = {
         });
     },
 
-    createSymbolText: function(symbol, text, eventListener, element) {
+    createSymbolText: function (symbol, text, eventListener, element) {
         if (element === undefined) {
             element = "div";
         }
@@ -708,7 +703,7 @@ var Remote = {
         var self = this;
 
         return {
-            string: function(key, name, value, type, forcedType) {
+            string: function (key, name, value, type, forcedType) {
                 var label = self.createConfigLabel(key, name, type, forcedType);
                 var input = self.createConfigInput(key, value);
                 input.type = "text";
@@ -718,7 +713,7 @@ var Remote = {
                 }
                 return label;
             },
-            number: function(key, name, value, type, forcedType) {
+            number: function (key, name, value, type, forcedType) {
                 var label = self.createConfigLabel(key, name, type, forcedType);
                 var input = self.createConfigInput(key, value);
                 input.type = "number";
@@ -728,7 +723,7 @@ var Remote = {
                 label.appendChild(input);
                 return label;
             },
-            boolean: function(key, name, value, type, forcedType) {
+            boolean: function (key, name, value, type, forcedType) {
                 var label = self.createConfigLabel(key, name, type, forcedType);
 
                 var input = self.createConfigInput(key, value, true);
@@ -744,7 +739,7 @@ var Remote = {
                 self.createVisualCheckbox(key, label, input, "fa-square-o", true);
                 return label;
             },
-            undefined: function(key, name, value, type, forcedType) {
+            undefined: function (key, name, value, type, forcedType) {
                 var label = self.createConfigLabel(key, name, type, forcedType);
                 var input = self.createConfigInput(key, value);
                 input.type = "text";
@@ -754,7 +749,7 @@ var Remote = {
                 label.appendChild(input);
                 return label;
             },
-            null: function(key, name, value, type, forcedType) {
+            null: function (key, name, value, type, forcedType) {
                 var label = self.createConfigLabel(key, name, type, forcedType);
                 var input = self.createConfigInput(key, value);
                 input.type = "text";
@@ -764,7 +759,7 @@ var Remote = {
                 label.appendChild(input);
                 return label;
             },
-            position: function(key, name, value, type, forcedType) {
+            position: function (key, name, value, type, forcedType) {
                 var label = self.createConfigLabel(key, name, type, forcedType);
                 var select = self.createConfigInput(key, value, false, "select");
                 select.className = "config-input";
@@ -788,7 +783,7 @@ var Remote = {
         }[type]
     },
 
-    getTypeAsString: function(dataToEdit, path) {
+    getTypeAsString: function (dataToEdit, path) {
         var type = typeof dataToEdit;
         if (path === "<root>/position") {
             type = "position";
@@ -808,7 +803,7 @@ var Remote = {
         return "object";
     },
 
-    hasForcedType: function(path) {
+    hasForcedType: function (path) {
         var forcedType = false;
         if ((path.match(/\//g) || []).length === 1) {
             // disable type editing in root layer
@@ -817,7 +812,7 @@ var Remote = {
         return forcedType;
     },
 
-    createObjectGUI: function(path, name, dataToEdit) {
+    createObjectGUI: function (path, name, dataToEdit) {
         var self = this;
 
         var type = this.getTypeAsString(dataToEdit, path);
@@ -865,29 +860,29 @@ var Remote = {
             addElement.appendChild(inputWrapper);
             inputWrapper.appendChild(input);
             var addFunction = function () {
-                    var existingKey = Object.keys(dataToEdit)[0];
-                    var lastType = self.getTypeAsString(path + "/" + existingKey, dataToEdit[existingKey]);
-                    var key = input.value;
-                    if (key === "" || document.getElementById(path + "/" + key)) {
-                        if (!self.hasClass(input, "input-error")) {
-                            input.className += " input-error";
-                        }
-                        return;
+                var existingKey = Object.keys(dataToEdit)[0];
+                var lastType = self.getTypeAsString(path + "/" + existingKey, dataToEdit[existingKey]);
+                var key = input.value;
+                if (key === "" || document.getElementById(path + "/" + key)) {
+                    if (!self.hasClass(input, "input-error")) {
+                        input.className += " input-error";
                     }
-                    input.className = input.className.replace(" input-error", "");
-                    dataToEdit[key] = self.values[self.types.indexOf(lastType)];
-                    var newElement = self.createObjectGUI(path + "/" + key, key, dataToEdit[key]);
-                    wrapper.insertBefore(newElement, addElement.nextSibling);
-                    input.value = "";
+                    return;
+                }
+                input.className = input.className.replace(" input-error", "");
+                dataToEdit[key] = self.values[self.types.indexOf(lastType)];
+                var newElement = self.createObjectGUI(path + "/" + key, key, dataToEdit[key]);
+                wrapper.insertBefore(newElement, addElement.nextSibling);
+                input.value = "";
             };
             var symbol = document.createElement("span");
             symbol.className = "fa fa-fw fa-plus-square button";
             symbol.addEventListener("click", addFunction, false);
             inputWrapper.appendChild(symbol);
-            input.onkeypress = function(e){
+            input.onkeypress = function (e) {
                 if (!e) e = window.event;
                 var keyCode = e.keyCode || e.which;
-                if (keyCode == "13"){
+                if (keyCode == "13") {
                     addFunction();
                 }
             }
@@ -902,7 +897,7 @@ var Remote = {
             if (dataToEdit.hasOwnProperty(key)) {
                 wrapper.appendChild(this.createObjectGUI(path + "/" + key, key, dataToEdit[key]));
             }
-        }            
+        }
         if (path === "<root>") {
             // additional css classes on root element
             wrapper.className = "flex-fill small";
@@ -910,7 +905,7 @@ var Remote = {
         return wrapper;
     },
 
-    appendConfigMenu: function(index, wrapper) {
+    appendConfigMenu: function (index, wrapper) {
         var self = this;
 
         var menuElement = self.createSymbolText("small fa fa-fw fa-navicon", self.translate("MENU"), function (event) {
@@ -943,7 +938,7 @@ var Remote = {
             self.changedModules.push(index);
             var parent = document.getElementById("edit-module-" + index).parentNode;
             if (parent.children.length === 2) {
-                parent.insertBefore(self.createChangedWarning(), parent.children[1]);               
+                parent.insertBefore(self.createChangedWarning(), parent.children[1]);
             }
             self.closePopup();
         });
@@ -956,7 +951,7 @@ var Remote = {
         wrapper.appendChild(line);
     },
 
-    setValue: function(parent, name, value) {
+    setValue: function (parent, name, value) {
         if (name.indexOf("#") !== -1) {
             parent.push(value);
         } else {
@@ -964,7 +959,7 @@ var Remote = {
         }
     },
 
-    navigate: function(parent, name) {
+    navigate: function (parent, name) {
         if (name.indexOf("#") !== -1) {
             return parent[parent.length - 1];
         } else {
@@ -972,7 +967,7 @@ var Remote = {
         }
     },
 
-    getModuleConfigFromUI: function() {
+    getModuleConfigFromUI: function () {
         var rootElement = {};
         var elements = document.getElementsByClassName("config-input");
         for (var i = 0; i < elements.length; i++) {
@@ -1004,12 +999,10 @@ var Remote = {
             if (name === "<add>" || (path === "<root>/position" && value === "")) {
                 continue;
             }
-            if (elements[i].type === "checkbox")
-            {
+            if (elements[i].type === "checkbox") {
                 value = elements[i].checked;
             }
-            if (elements[i].type === "number")
-            {
+            if (elements[i].type === "number") {
                 value = parseFloat(value);
             }
             this.setValue(parent, name, value);
@@ -1017,7 +1010,7 @@ var Remote = {
         return rootElement;
     },
 
-    createConfigPopup: function(index) {
+    createConfigPopup: function (index) {
         var self = this;
         if (typeof index === "string") {
             index = parseInt(index);
@@ -1057,9 +1050,9 @@ var Remote = {
         this.showPopup();
     },
 
-    createChangedWarning: function() {
+    createChangedWarning: function () {
         var self = this;
-        var changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function() {
+        var changed = Remote.createSymbolText("fa fa-fw fa-warning", this.translate("UNSAVED_CHANGES"), function () {
             var saveButton = document.getElementById("save-config");
             if (!self.hasClass(saveButton, "highlight")) {
                 saveButton.className += " highlight";
@@ -1069,13 +1062,13 @@ var Remote = {
         return changed;
     },
 
-    appendModuleEditElements: function(wrapper, moduleData) {
+    appendModuleEditElements: function (wrapper, moduleData) {
         var self = this;
         for (var i = 0; i < moduleData.length; i++) {
             var innerWrapper = document.createElement("div");
             innerWrapper.className = "module-line";
 
-            var moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), function(event) {
+            var moduleBox = self.createSymbolText("fa fa-fw fa-pencil", self.formatName(moduleData[i].module), function (event) {
                 var i = event.currentTarget.id.replace("edit-module-", "");
                 self.createConfigPopup(i);
             }, "span");
@@ -1099,7 +1092,7 @@ var Remote = {
         }
     },
 
-    loadConfigModules: function() {
+    loadConfigModules: function () {
         var self = this;
 
         console.log("Loading modules in config...");
@@ -1110,9 +1103,9 @@ var Remote = {
             if (self.addModule) {
                 var name = self.addModule;
                 // we came here from adding a module
-                self.get("get", "data=defaultConfig&module=" + name, function(response) {
+                self.get("get", "data=defaultConfig&module=" + name, function (response) {
                     var newData = JSON.parse(response);
-                    moduleData.push({module: name, config: newData});
+                    moduleData.push({ module: name, config: newData });
                     var index = moduleData.length - 1;
                     self.changedModules.push(index);
                     self.appendModuleEditElements(parent, moduleData);
@@ -1125,7 +1118,7 @@ var Remote = {
         });
     },
 
-    createAddingPopup: function(index) {
+    createAddingPopup: function (index) {
         var self = this;
         if (typeof index === "string") {
             index = parseInt(index);
@@ -1182,7 +1175,7 @@ var Remote = {
         this.showPopup();
     },
 
-    loadModulesToAdd: function() {
+    loadModulesToAdd: function () {
         var self = this;
 
         console.log("Loading modules to add...");
@@ -1205,7 +1198,7 @@ var Remote = {
         });
     },
 
-    offerRestart: function(message) {
+    offerRestart: function (message) {
         var wrapper = document.createElement("div");
 
         var info = document.createElement("span");
@@ -1218,10 +1211,10 @@ var Remote = {
         this.setStatus("success", false, wrapper);
     },
 
-    updateModule: function(module) {
+    updateModule: function (module) {
         var self = this;
 
-        self.getWithStatus("action=UPDATE&module=" + module, function(response) {
+        self.getWithStatus("action=UPDATE&module=" + module, function (response) {
             var result = JSON.parse(response);
             if (result.status === "success") {
                 if (result.code === "restart") {
@@ -1235,15 +1228,14 @@ var Remote = {
         });
     },
 
-    loadModulesToUpdate: function() {
+    loadModulesToUpdate: function () {
         var self = this;
 
         console.log("Loading modules to update...");
 
         // also update mm info notification
-        this.get("get", "data=mmUpdateAvailable", function(result) {
-            if (window.location.hash.substring(1) == "update-menu")
-            {
+        this.get("get", "data=mmUpdateAvailable", function (result) {
+            if (window.location.hash.substring(1) == "update-menu") {
                 var updateAvailable = JSON.parse(result);
                 var element = document.getElementById("update-mm-status");
                 var updateButton = document.getElementById("update-mm-button");
@@ -1284,7 +1276,7 @@ var Remote = {
         });
     },
 
-    saveConfig: function() {
+    saveConfig: function () {
         var self = this;
 
         // prevent saving before current saving is finished
@@ -1320,13 +1312,16 @@ var Remote = {
 
 var buttons = {
     // navigation buttons
-    "power-button": function() {
+    "power-button": function () {
         window.location.hash = "power-menu";
     },
-    "edit-button": function() {
+    "edit-button": function () {
         window.location.hash = "edit-menu";
     },
-    "settings-button": function() {
+    "arduino-control-button": function () {
+        window.location.hash = "arduino-menu";
+    },
+    "settings-button": function () {
         var self = Remote;
 
         var wrapper = document.createElement("div");
@@ -1346,13 +1341,16 @@ var buttons = {
 
         self.setStatus(false, false, wrapper);
     },
-    "mirror-link-button": function() {
+    "mirror-link-button": function () {
         window.open("/", "_blank");
     },
-    "back-button": function() {
+    "back-button": function () {
         if (window.location.hash === "#add-module-menu") {
             window.location.hash = "settings-menu";
             return;
+        }
+        else if (window.location.hash === "#arduino-menu") {  //////////////////hide arduino switches
+            document.getElementById("arduino-light-switch").classList.add("hidden");
         }
         window.location.hash = "main-menu";
     },
@@ -1364,14 +1362,14 @@ var buttons = {
     },
 
     // settings menu buttons
-    "brightness-reset": function() {
+    "brightness-reset": function () {
         var element = document.getElementById("brightness-slider");
         element.value = 100;
         Remote.getWithStatus("action=BRIGHTNESS&value=100");
     },
 
     // edit menu buttons
-    "show-all-button": function() {
+    "show-all-button": function () {
         var parent = document.getElementById("visible-modules-results");
         var buttons = parent.children;
         for (var i = 0; i < buttons.length; i++) {
@@ -1382,7 +1380,7 @@ var buttons = {
             Remote.showModule(buttons[i].id);
         }
     },
-    "hide-all-button": function() {
+    "hide-all-button": function () {
         var parent = document.getElementById("visible-modules-results");
         var buttons = parent.children;
         for (var i = 0; i < buttons.length; i++) {
@@ -1392,7 +1390,7 @@ var buttons = {
     },
 
     // power menu buttons
-    "shut-down-button": function() {
+    "shut-down-button": function () {
         var self = Remote;
 
         var wrapper = document.createElement("div");
@@ -1412,7 +1410,7 @@ var buttons = {
 
         self.setStatus(false, false, wrapper);
     },
-    "restart-button": function() {
+    "restart-button": function () {
         var self = Remote;
 
         var wrapper = document.createElement("div");
@@ -1421,7 +1419,7 @@ var buttons = {
         wrapper.appendChild(text);
 
         var ok = self.createSymbolText("fa fa-refresh", self.translate("RESTART"), function () {
-                Remote.getWithStatus("action=REBOOT");
+            Remote.getWithStatus("action=REBOOT");
         });
         wrapper.appendChild(ok);
 
@@ -1432,36 +1430,46 @@ var buttons = {
 
         self.setStatus(false, false, wrapper);
     },
-    "restart-mm-button": function() {
+    "restart-mm-button": function () {
         Remote.getWithStatus("action=RESTART");
-        setTimeout(function(){document.location.reload(); console.log("Delayed REFRESH");}, 60000);
+        setTimeout(function () { document.location.reload(); console.log("Delayed REFRESH"); },  60000);
     },
-    "monitor-on-button": function() {
+    "monitor-on-button": function () {
         Remote.getWithStatus("action=MONITORON");
     },
-    "monitor-off-button": function() {
+    "monitor-off-button": function () {
         Remote.getWithStatus("action=MONITOROFF");
     },
     "refresh-mm-button": function () {
         Remote.getWithStatus("action=REFRESH");
     },
+    "arduino-light-switch": function () {
+        if (this.classList.contains("toggled-off")) {
+            this.classList.replace("toggled-off", "toggled-on");;
+            Remote.getWithStatus("action=TURNONLIGHT");
+        } else if (this.classList.contains("toggled-on")) {
+            this.classList.replace("toggled-on", "toggled-off");
+            Remote.getWithStatus("action=TURNOFFLIGHT");
+        }
+
+    },
 
     // config menu buttons
-    "add-module": function() {
+    "add-module": function () {
         window.location.hash = "add-module-menu";
     },
-    "save-config": function() {
+    "save-config": function () {
         Remote.saveConfig();
     },
 
     // main menu
-    "save-button": function() {
+    "save-button": function () {
         Remote.getWithStatus("action=SAVE");
     },
-    "close-popup": function() {
+    "close-popup": function () {
         Remote.closePopup();
     },
-    "close-result": function() {
+    "close-result": function () {
         Remote.setStatus("none");
     },
 
@@ -1474,7 +1482,7 @@ var buttons = {
     "send-alert-button": function () {
         var kvpairs = [];
         var form = document.getElementById("alert");
-        for ( var i = 0; i < form.elements.length; i++ ) {
+        for (var i = 0; i < form.elements.length; i++) {
             var e = form.elements[i];
             kvpairs.push(encodeURIComponent(e.name) + "=" + encodeURIComponent(e.value));
         }
@@ -1497,7 +1505,7 @@ if (window.location.hash) {
     Remote.showMenu("main-menu");
 }
 
-window.onhashchange = function() {
+window.onhashchange = function () {
     if (Remote.skipHashChange) {
         Remote.skipHashChange = false;
         return;

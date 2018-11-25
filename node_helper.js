@@ -645,6 +645,17 @@ module.exports = NodeHelper.create({
 			self.sendSocketNotification(query.action);
 			return true;
 		}
+
+		if (query.action === "TURNONLIGHT") {
+			if (res) { res.send({"status": "success"}); }
+			self.sendSocketNotification(query.action);
+			return true;
+		}
+		if (query.action === "TURNOFFLIGHT") {
+			if (res) { res.send({"status": "success"}); }
+			self.sendSocketNotification(query.action);
+			return true;
+		}
 		if (query.action === "HIDE_ALERT")
 		{
 			if (res) { res.send({"status": "success"}); }
