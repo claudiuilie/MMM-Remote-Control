@@ -17,7 +17,7 @@ Module.register("MMM-Remote-Control", {
 	},
 
 	// Define start sequence.
-	start: function() {
+	start: function () {
 		Log.info("Starting module: " + this.name);
 
 		this.settingsVersion = 2;
@@ -27,17 +27,17 @@ Module.register("MMM-Remote-Control", {
 		this.brightness = 100;
 	},
 
-	getStyles: function() {
+	getStyles: function () {
 		return ["remote-control.css"];
 	},
 
-	notificationReceived: function(notification, payload, sender) {
+	notificationReceived: function (notification, payload, sender) {
 		if (sender) {
 			Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
 			if (notification === "REMOTE_ACTION") {
-				this.sendSocketNotification(notification, payload);	
+				this.sendSocketNotification(notification, payload);
 			}
-		} else { 
+		} else {
 			if (notification === "DOM_OBJECTS_CREATED") {
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			}
@@ -45,14 +45,14 @@ Module.register("MMM-Remote-Control", {
 	},
 
 	// Override socket notification handler.
-	socketNotificationReceived: function(notification, payload) {
+	socketNotificationReceived: function (notification, payload) {
+		var modules = MM.getModules();
 		if (notification === "UPDATE") {
 			this.sendCurrentData();
 		}
 		if (notification === "IP_ADDRESSES") {
 			this.addresses = payload;
-			if (this.data.position)
-			{
+			if (this.data.position) {
 				this.updateDom();
 			}
 		}
@@ -65,15 +65,14 @@ Module.register("MMM-Remote-Control", {
 			if (settingsVersion < this.settingsVersion) {
 				if (settingsVersion === 0) {
 					// move old data into moduleData
-					payload = { moduleData : payload, brightness : 100};
+					payload = { moduleData: payload, brightness: 100 };
 				}
 			}
 
 			var moduleData = payload.moduleData;
 			var hideModules = {};
 			for (var i = 0; i < moduleData.length; i++) {
-				for (var k = 0; k < moduleData[i].lockStrings.length; k++)
-				{
+				for (var k = 0; k < moduleData[i].lockStrings.length; k++) {
 					if (moduleData[i].lockStrings[k].indexOf("MMM-Remote-Control") >= 0) {
 						hideModules[moduleData[i].identifier] = true;
 						break;
@@ -83,9 +82,9 @@ Module.register("MMM-Remote-Control", {
 
 			var modules = MM.getModules();
 
-			var options = {lockString: this.identifier};
+			var options = { lockString: this.identifier };
 
-			modules.enumerate(function(module) {
+			modules.enumerate(function (module) {
 				if (hideModules.hasOwnProperty(module.identifier)) {
 					module.hide(0, options);
 				}
@@ -96,21 +95,33 @@ Module.register("MMM-Remote-Control", {
 		if (notification === "BRIGHTNESS") {
 			this.setBrightness(parseInt(payload));
 		}
-		if (notification === "REFRESH" ) {
-            document.location.reload();
+		if (notification === "REFRESH") {
+			document.location.reload();
 		}
-		if (notification === "TURNONLIGHT"){
-			fetch('http://192.168.1.200/?turnOnLight');
-			// alert('turnOn');
+		if (notification === "TURNONLIGHT") {
+			var self = this;
+			fetch('http://192.168.1.200/?turnOnLight')
+				.then((dataOn) => {
+					if (dataOn.status == 200) {
+						self.sendNotification("TURNONLIGHT", { bedlight: true });
+					}
+				})
+
 		}
-		if (notification === "TURNOFFLIGHT"){
+		if (notification === "TURNOFFLIGHT") {
+			var self = this;
 			fetch('http://192.168.1.200/?turnOffLight')
-			
-		}
+			.then((dataOff) => {
+				if (dataOff.status == 200) {
+					self.sendNotification("TURNONLIGHT", { bedlight: false });
+				}
+			})
+		}	
+		
 		if (notification === "RESTART") {
-			setTimeout(function() {
+			setTimeout(function () {
 				document.location.reload(); console.log('Delayed REFRESH');
-			}, 60000);
+			},  60000);
 		}
 		if (notification === "SHOW_ALERT") {
 			this.sendNotification(notification, payload);
@@ -119,9 +130,9 @@ Module.register("MMM-Remote-Control", {
 			this.sendNotification(notification);
 		}
 		if (notification === "HIDE" || notification === "SHOW") {
-			var options = {lockString: this.identifier};
+			var options = { lockString: this.identifier };
 			var modules = MM.getModules();
-			modules.enumerate(function(module) {
+			modules.enumerate(function (module) {
 				if (module.identifier === payload.module) {
 					if (notification === "HIDE") {
 						module.hide(1000, options);
@@ -139,7 +150,7 @@ Module.register("MMM-Remote-Control", {
 		}
 	},
 
-	buildCssContent: function(brightness) {
+	buildCssContent: function (brightness) {
 		var css = "";
 
 		var defaults = {
@@ -154,8 +165,7 @@ Module.register("MMM-Remote-Control", {
 			var value = defaults[key] / 100 * brightness;
 			value = Math.round(value);
 			value = Math.min(value, 255);
-			if (value < 16)
-			{
+			if (value < 16) {
 				value = "0" + value.toString(16);
 			} else {
 				value = value.toString(16);
@@ -169,7 +179,7 @@ Module.register("MMM-Remote-Control", {
 		return css;
 	},
 
-	setBrightness: function(newBrightnessValue) {
+	setBrightness: function (newBrightnessValue) {
 		if (newBrightnessValue < 10) {
 			newBrightnessValue = 10;
 		}
@@ -204,7 +214,7 @@ Module.register("MMM-Remote-Control", {
 		this.removeOverlay();
 	},
 
-	createOverlay: function(brightness) {
+	createOverlay: function (brightness) {
 		var overlay = document.getElementById('remote-control-overlay');
 		if (!overlay) {
 			// if not existing, create overlay
@@ -213,11 +223,11 @@ Module.register("MMM-Remote-Control", {
 			var parent = document.body;
 			parent.insertBefore(overlay, parent.firstChild);
 		}
-		var bgColor = "rgba(0,0,0," + (100 - brightness)/100 + ")";
+		var bgColor = "rgba(0,0,0," + (100 - brightness) / 100 + ")";
 		overlay.style.backgroundColor = bgColor;
 	},
 
-	removeOverlay: function() {
+	removeOverlay: function () {
 		var overlay = document.getElementById('remote-control-overlay');
 		if (overlay) {
 			var parent = document.body;
@@ -225,7 +235,7 @@ Module.register("MMM-Remote-Control", {
 		}
 	},
 
-	getDom: function() {
+	getDom: function () {
 		var wrapper = document.createElement("div");
 		if (this.addresses.length === 0) {
 			this.addresses = ["ip-of-your-mirror"];
@@ -235,13 +245,13 @@ Module.register("MMM-Remote-Control", {
 		return wrapper;
 	},
 
-	sendCurrentData: function() {
+	sendCurrentData: function () {
 		var self = this;
 
 		var modules = MM.getModules();
 		var currentModuleData = [];
 		var index = 0;
-		modules.enumerate(function(module) {
+		modules.enumerate(function (module) {
 			currentModuleData.push({});
 			currentModuleData[index]["hidden"] = module.hidden;
 			currentModuleData[index]["lockStrings"] = module.lockStrings;

@@ -1445,6 +1445,7 @@ var buttons = {
     },
     "arduino-light-switch": function () {
         if (this.classList.contains("toggled-off")) {
+            
             this.classList.replace("toggled-off", "toggled-on");;
             Remote.getWithStatus("action=TURNONLIGHT");
         } else if (this.classList.contains("toggled-on")) {
