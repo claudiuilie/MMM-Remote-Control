@@ -646,16 +646,6 @@ module.exports = NodeHelper.create({
 			return true;
 		}
 
-		if (query.action === "TURNONLIGHT") {
-			if (res) { res.send({"status": "success"}); }
-			self.sendSocketNotification(query.action);
-			return true;
-		}
-		if (query.action === "TURNOFFLIGHT") {
-			if (res) { res.send({"status": "success"}); }
-			self.sendSocketNotification(query.action);
-			return true;
-		}
 		if (query.action === "HIDE_ALERT")
 		{
 			if (res) { res.send({"status": "success"}); }
@@ -699,6 +689,17 @@ module.exports = NodeHelper.create({
 				res.send({'status': err.message});
 				return true;
 			}
+		}
+		////Arduino Control Switches//
+		if (query.action === "FURNITURELEDON") {
+			if (res) { res.send({"status": "success"}); }
+			self.sendSocketNotification(query.action);
+			return true;
+		}
+		if (query.action === "FURNITURELEDOFF") {
+			if (res) { res.send({"status": "success"}); }
+			self.sendSocketNotification(query.action);
+			return true;
 		}
 		return false;
 	},

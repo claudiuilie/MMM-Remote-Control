@@ -331,6 +331,7 @@ var Remote = {
     },
 
     hideModule: function (id) {
+        console.log(id);
         this.getWithStatus("action=HIDE&module=" + id);
     },
 
@@ -1350,7 +1351,7 @@ var buttons = {
             return;
         }
         else if (window.location.hash === "#arduino-menu") {  //////////////////hide arduino switches
-            document.getElementById("arduino-light-switch").classList.add("hidden");
+            document.getElementById("furniture-led-switch").classList.add("hidden");
         }
         window.location.hash = "main-menu";
     },
@@ -1443,14 +1444,14 @@ var buttons = {
     "refresh-mm-button": function () {
         Remote.getWithStatus("action=REFRESH");
     },
-    "arduino-light-switch": function () {
+    "furniture-led-switch": function () {
         if (this.classList.contains("toggled-off")) {
-            
             this.classList.replace("toggled-off", "toggled-on");;
-            Remote.getWithStatus("action=TURNONLIGHT");
+            Remote.getWithStatus("action=FURNITURELEDON");
+
         } else if (this.classList.contains("toggled-on")) {
             this.classList.replace("toggled-on", "toggled-off");
-            Remote.getWithStatus("action=TURNOFFLIGHT");
+            Remote.getWithStatus("action=FURNITURELEDOFF");
         }
 
     },

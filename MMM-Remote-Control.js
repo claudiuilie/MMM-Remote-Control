@@ -47,6 +47,23 @@ Module.register("MMM-Remote-Control", {
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
 		var modules = MM.getModules();
+		if (notification === "FURNITURELEDON") {
+			var self = this;	
+			fetch('http://192.168.1.200/?furnitureLedOn')
+				.then((dataOn) => {
+					self.sendNotification("FURNITURELEDON", { bedlight: true });
+					fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED ON&silent=true');
+				})
+
+		}
+		if (notification === "FURNITURELEDOFF") {
+			var self = this;
+			fetch('http://192.168.1.200/?furnitureLedOff')
+			.then((dataOff) => {
+				self.sendNotification("FURNITURELEDON", { bedlight: false });
+				fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED OFF&silent=true');
+			})
+		}
 		if (notification === "UPDATE") {
 			this.sendCurrentData();
 		}
@@ -97,25 +114,6 @@ Module.register("MMM-Remote-Control", {
 		}
 		if (notification === "REFRESH") {
 			document.location.reload();
-		}
-		if (notification === "TURNONLIGHT") {
-			var self = this;
-			fetch('http://192.168.1.200/?turnOnLight')
-				.then((dataOn) => {
-					if (dataOn.status == 200) {
-						self.sendNotification("TURNONLIGHT", { bedlight: true });
-					}
-				})
-
-		}
-		if (notification === "TURNOFFLIGHT") {
-			var self = this;
-			fetch('http://192.168.1.200/?turnOffLight')
-			.then((dataOff) => {
-				if (dataOff.status == 200) {
-					self.sendNotification("TURNONLIGHT", { bedlight: false });
-				}
-			})
 		}	
 		
 		if (notification === "RESTART") {
