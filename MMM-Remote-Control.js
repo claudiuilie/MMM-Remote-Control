@@ -30,11 +30,32 @@ Module.register("MMM-Remote-Control", {
 	getStyles: function () {
 		return ["remote-control.css"];
 	},
-
+/// comanda vocala ////
 	notificationReceived: function (notification, payload, sender) {
+		
 		if (sender) {
 			Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
 			if (notification === "REMOTE_ACTION") {
+				this.sendSocketNotification(notification, payload);
+			}
+			else if (notification === "FURNITURELEDON")  /// comanda vocala aici
+			{	
+				var self = this;
+				fetch('http://192.168.1.200/?furnitureLedOn')
+				.then((dataOn) => {
+					self.sendNotification("FURNITURELEDON", { bedlight: true });
+					fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED ON&silent=true');
+				})
+				this.sendSocketNotification(notification, payload);
+			}
+			else if (notification === "FURNITURELEDOFF")  /// comanda vocala aici
+			{
+				var self = this;
+				fetch('http://192.168.1.200/?furnitureLedOff')
+				.then((dataOff) => {
+					self.sendNotification("FURNITURELEDON", { bedlight: false });
+					fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED OFF&silent=true');
+				})
 				this.sendSocketNotification(notification, payload);
 			}
 		} else {
@@ -42,6 +63,7 @@ Module.register("MMM-Remote-Control", {
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
 			}
 		}
+		
 	},
 
 	// Override socket notification handler.
