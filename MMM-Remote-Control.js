@@ -38,26 +38,7 @@ Module.register("MMM-Remote-Control", {
 			if (notification === "REMOTE_ACTION") {
 				this.sendSocketNotification(notification, payload);
 			}
-			else if (notification === "FURNITURELEDON")  /// comanda vocala aici
-			{	
-				var self = this;
-				fetch('http://192.168.1.200/?furnitureLedOn')
-				.then((dataOn) => {
-					self.sendNotification("FURNITURELEDON", { bedlight: true });
-					fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED ON&silent=true');
-				})
-				this.sendSocketNotification(notification, payload);
-			}
-			else if (notification === "FURNITURELEDOFF")  /// comanda vocala aici
-			{
-				var self = this;
-				fetch('http://192.168.1.200/?furnitureLedOff')
-				.then((dataOff) => {
-					self.sendNotification("FURNITURELEDON", { bedlight: false });
-					fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED OFF&silent=true');
-				})
-				this.sendSocketNotification(notification, payload);
-			}
+			
 		} else {
 			if (notification === "DOM_OBJECTS_CREATED") {
 				this.sendSocketNotification("REQUEST_DEFAULT_SETTINGS");
@@ -69,22 +50,9 @@ Module.register("MMM-Remote-Control", {
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
 		var modules = MM.getModules();
-		if (notification === "FURNITURELEDON") {
+		if (notification === "FURNITURELED_ON" || notification === "FURNITURELED_OFF") {
 			var self = this;	
-			fetch('http://192.168.1.200/?furnitureLedOn')
-				.then((dataOn) => {
-					self.sendNotification("FURNITURELEDON", { bedlight: true });
-					fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED ON&silent=true');
-				})
-
-		}
-		if (notification === "FURNITURELEDOFF") {
-			var self = this;
-			fetch('http://192.168.1.200/?furnitureLedOff')
-			.then((dataOff) => {
-				self.sendNotification("FURNITURELEDON", { bedlight: false });
-				fetch('http://192.168.1.104:8080/syslog?type=INFO&message=Living LED OFF&silent=true');
-			})
+			self.sendNotification(notification, { message: "Living led "+ notification.split('_')[1] });
 		}
 		if (notification === "UPDATE") {
 			this.sendCurrentData();

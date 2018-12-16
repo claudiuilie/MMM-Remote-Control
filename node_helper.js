@@ -691,12 +691,12 @@ module.exports = NodeHelper.create({
 			}
 		}
 		////Arduino Control Switches//
-		if (query.action === "FURNITURELEDON") {
+		if (query.action === "FURNITURELED_ON") {
 			if (res) { res.send({"status": "success"}); }
 			self.sendSocketNotification(query.action);
 			return true;
 		}
-		if (query.action === "FURNITURELEDOFF") {
+		if (query.action === "FURNITURELED_OFF") {
 			if (res) { res.send({"status": "success"}); }
 			self.sendSocketNotification(query.action);
 			return true;

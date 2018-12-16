@@ -1447,11 +1447,11 @@ var buttons = {
     "furniture-led-switch": function () {
         if (this.classList.contains("toggled-off")) {
             this.classList.replace("toggled-off", "toggled-on");;
-            Remote.getWithStatus("action=FURNITURELEDON");
+            Remote.getWithStatus("action=FURNITURELED_ON");
 
         } else if (this.classList.contains("toggled-on")) {
             this.classList.replace("toggled-on", "toggled-off");
-            Remote.getWithStatus("action=FURNITURELEDOFF");
+            Remote.getWithStatus("action=FURNITURELED_OFF");
         }
 
     },
