@@ -52,7 +52,7 @@ Module.register("MMM-Remote-Control", {
 		var modules = MM.getModules();
 		if (notification === "FURNITURELED_ON" || notification === "FURNITURELED_OFF") {
 			var self = this;	
-			self.sendNotification(notification, { message: "Living led "+ notification.split('_')[1] });
+			self.sendNotification(notification, { urlApi:"http://192.168.1.200/?"+notification});
 		}
 		if (notification === "UPDATE") {
 			this.sendCurrentData();
